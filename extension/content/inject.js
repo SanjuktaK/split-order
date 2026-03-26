@@ -167,17 +167,59 @@
       }
       dlog('Amazon: order', orderId, 'product links', productRows.length);
 
+      // Order-level total (shown on list page): yohtmlc-order-total > .a-color-price in header
+      const orderTotalEl = orderEl.querySelector('.yohtmlc-order-total .a-color-price')
+                        || orderEl.querySelector('.yohtmlc-order-total')
+                        || orderEl.querySelector('.yo-ac-order-total');
+      const orderTotal = parsePrice(orderTotalEl?.textContent || '');
+      const itemCount = productRows.length || 1;
+
       productRows.forEach((a, i) => {
         const container = a.closest('.a-fixed-left-grid, .a-fixed-left-grid-inner, .a-row, .a-spacing-base, .item-box') || orderEl;
         const title = a.textContent?.trim() || 'Item';
 
-        // Price: data-component (React) > item-total-price > a-color-price > offscreen > generic
-        const priceEl = container.querySelector(
+        // Price: try item-level first (works on order detail pages)
+        let priceEl = container.querySelector(
           '[data-component="unitPrice"] span:not(span span), ' +
           'span[id*="item-total-price"], ' +
-          '.a-color-price, .a-offscreen, .a-text-right, span.price'
+          '.a-color-price'
         );
-        const price = parsePrice(priceEl?.textContent || '');
+
+        // If not found in immediate container, try climbing to parent rows
+        if (!priceEl || !parsePrice(priceEl.textContent || '').value) {
+          let parent = container.parentElement;
+          let climb = 0;
+          while (parent && parent !== orderEl && climb < 4) {
+            priceEl = parent.querySelector(
+              '[data-component="unitPrice"] span:not(span span), ' +
+              'span[id*="item-total-price"], ' +
+              '.a-color-price'
+            );
+            if (priceEl && parsePrice(priceEl.textContent || '').value) break;
+            priceEl = null;
+            parent = parent.parentElement;
+            climb++;
+          }
+        }
+
+        // Also try .a-offscreen (screen-reader price text) near the product link
+        if (!priceEl || !parsePrice(priceEl.textContent || '').value) {
+          const offscreenEls = container.querySelectorAll('.a-offscreen');
+          for (const el of offscreenEls) {
+            const val = parsePrice(el.textContent || '');
+            if (val.value > 0) { priceEl = el; break; }
+          }
+        }
+
+        let price = parsePrice(priceEl?.textContent || '');
+
+        // Fallback: if still no item price, split the order total evenly
+        if (price.value <= 0 && orderTotal.value > 0) {
+          price = {
+            value: Math.round((orderTotal.value / itemCount) * 100) / 100,
+            currency: orderTotal.currency
+          };
+        }
 
         // Quantity: data-component > item-view-qty > text regex
         const qtyEl = container.querySelector(
