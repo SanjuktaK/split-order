@@ -1,0 +1,74 @@
+:root {
+  --osz-bg: #101828;
+  --osz-fg: #ffffff;
+  --osz-accent: #3b82f6;
+  --osz-border: #e5e7eb;
+}
+
+.osz-root {
+  all: initial;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2147483647;
+  color: var(--osz-bg);
+}
+
+.osz-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--osz-bg);
+  color: var(--osz-fg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.osz-panel {
+  all: initial;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: min(480px, calc(100vw - 40px));
+  height: min(70vh, calc(100vh - 40px));
+  background: #fff;
+  color: #0f172a;
+  border: 1px solid var(--osz-border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  display: none;
+}
+
+.osz-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--osz-border);
+  background: #f8fafc;
+}
+
+.osz-title { font-weight: 700; }
+
+.osz-close { all: unset; cursor: pointer; padding: 6px; }
+
+.osz-body { padding: 10px 12px; overflow: auto; height: calc(100% - 46px); }
+
+.osz-item { border: 1px solid var(--osz-border); border-radius: 8px; padding: 8px; margin: 8px 0; }
+.osz-item-title { font-weight: 600; margin-bottom: 4px; }
+.osz-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.osz-chip { border: 1px solid var(--osz-border); border-radius: 999px; padding: 2px 8px; font-size: 12px; }
+
+.osz-radio { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.osz-radio label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+.osz-footer { margin-top: 12px; display: flex; gap: 8px; }
+.osz-cta { all: unset; padding: 8px 10px; background: var(--osz-accent); color: white; border-radius: 8px; cursor: pointer; }
+.osz-secondary { all: unset; padding: 8px 10px; background: #e2e8f0; border-radius: 8px; cursor: pointer; }
+
+.osz-empty { color: #475569; font-size: 14px; }
+

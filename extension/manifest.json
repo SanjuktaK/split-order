@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Order Splitter for Splitwise",
+  "description": "Scan e-commerce order history pages, annotate purchases as Mine/Roommate/Shared, and export for Splitwise.",
+  "version": "0.1.0",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "https://www.walmart.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Order Splitter",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.amazon.com/*",
+        "https://www.walmart.com/*"
+      ],
+      "js": ["content/inject.js"],
+      "css": ["content/common.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

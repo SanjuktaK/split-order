@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Order Splitter – Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Roommates & Settings</h1>
+      <p>Add roommate names to assign items quickly.</p>
+
+      <div class="section">
+        <label for="roommate-input">Add roommate</label>
+        <div class="row">
+          <input id="roommate-input" type="text" placeholder="e.g. Alex" />
+          <button id="add-roommate">Add</button>
+        </div>
+        <ul id="roommate-list"></ul>
+      </div>
+
+      <div class="foot">Data is stored locally via chrome.storage.sync.</div>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+  </html>
+
