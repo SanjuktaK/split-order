@@ -167,10 +167,43 @@
       }
       dlog('Amazon: order', orderId, 'product links', productRows.length);
 
-      // Order-level total (shown on list page): yohtmlc-order-total > .a-color-price in header
-      const orderTotalEl = orderEl.querySelector('.yohtmlc-order-total .a-color-price')
-                        || orderEl.querySelector('.yohtmlc-order-total')
-                        || orderEl.querySelector('.yo-ac-order-total');
+      // Order-level total (shown on list page)
+      // Try class-based selectors first, then find by "Total" text label
+      let orderTotalEl = orderEl.querySelector('.yohtmlc-order-total .a-color-price')
+                      || orderEl.querySelector('.yohtmlc-order-total')
+                      || orderEl.querySelector('.yo-ac-order-total');
+      if (!orderTotalEl || !parsePrice(orderTotalEl.textContent || '').value) {
+        // Find any element whose text starts with "Total" and grab the price nearby
+        const allSpans = orderEl.querySelectorAll('span, div');
+        for (const el of allSpans) {
+          const t = el.textContent?.trim() || '';
+          if (/^Total\b/i.test(t) && parsePrice(t).value > 0) {
+            orderTotalEl = el;
+            break;
+          }
+        }
+        // Also try: label says "Total", sibling/parent has the price
+        if (!orderTotalEl || !parsePrice(orderTotalEl.textContent || '').value) {
+          for (const el of allSpans) {
+            if (/^Total$/i.test(el.textContent?.trim() || '')) {
+              const parent = el.closest('.a-row, .a-column, div');
+              if (parent) {
+                const priceNearby = parent.querySelector('.a-color-price, .a-text-bold, .value');
+                if (priceNearby && parsePrice(priceNearby.textContent || '').value > 0) {
+                  orderTotalEl = priceNearby;
+                  break;
+                }
+                // Check next sibling element
+                const next = el.nextElementSibling;
+                if (next && parsePrice(next.textContent || '').value > 0) {
+                  orderTotalEl = next;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
       const orderTotal = parsePrice(orderTotalEl?.textContent || '');
       const itemCount = productRows.length || 1;
 
